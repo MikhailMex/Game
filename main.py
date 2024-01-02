@@ -23,7 +23,9 @@ class Ball:
     def draw(self, screen):
         screen.fill('black')
         pygame.draw.rect(screen, gray, (10, 10, size2[0], size2[1]))
+
         pygame.draw.circle(screen, white, (int(self.x), int(self.y)), 10)
+
         pygame.draw.rect(screen, white, (700, 600, 50, 50), 1)
         pygame.draw.rect(screen, white, (600, 600, 50, 50), 1)
         pygame.draw.rect(screen, white, (450, 600, 100, 50), 1)
@@ -48,13 +50,41 @@ class Ball:
         self.speed -= a
 
 
+class Point:
+    def __init__(self, x, y, screen):
+        self.x = x
+        self.y = y
+        self.screen = screen
+
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy
+        pygame.draw.rect(screen, gray, (10, 10, size2[0], size2[1]))
+
+        pygame.draw.circle(self.screen, yellow, (self.x, self.y), 20)
+
+        pygame.draw.rect(self.screen, white, (700, 600, 50, 50), 1)
+        pygame.draw.rect(self.screen, white, (600, 600, 50, 50), 1)
+        pygame.draw.rect(self.screen, white, (450, 600, 100, 50), 1)
+
+        font = pygame.font.Font(None, 100)
+        text = font.render('>', True, red)
+        screen.blit(text, (705, 585))
+
+        font = pygame.font.Font(None, 100)
+        text = font.render('<', True, red)
+        screen.blit(text, (605, 585))
+
+        font = pygame.font.Font(None, 50)
+        text = font.render('color', True, red)
+        screen.blit(text, (460, 605))
+        pygame.display.flip()
+
+
 gray = (120, 120, 120)
 white = (255, 255, 255)
 red = (255, 0, 0)
-
-
-def change_color():
-    pass
+yellow = (255, 255, 0)
 
 
 if __name__ == '__main__':
@@ -68,6 +98,7 @@ if __name__ == '__main__':
     pause = False
     speed = 1000
     ball = Ball(speed)
+    point = Point(width1 // 2, 20, screen)
     while running:
         dt = clock.tick(60) / 1000.0
         for event in pygame.event.get():
@@ -83,7 +114,18 @@ if __name__ == '__main__':
                     gray = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
                     red = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
                     white = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                    yellow = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    point.move(-10, 0)
+                elif event.key == pygame.K_RIGHT:
+                    point.move(10, 0)
+                elif event.key == pygame.K_UP:
+                    point.move(0, -10)
+                elif event.key == pygame.K_DOWN:
+                    point.move(0, 10)
         ball.update(dt)
         ball.draw(screen)
+        point.move(0, 0)
 
     pygame.quit()
