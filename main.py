@@ -59,26 +59,6 @@ class Point:
     def move(self, dx, dy):
         self.x += dx
         self.y += dy
-        pygame.draw.rect(screen, gray, (10, 10, size2[0], size2[1]))
-
-        pygame.draw.circle(self.screen, yellow, (self.x, self.y), 20)
-
-        pygame.draw.rect(self.screen, white, (700, 600, 50, 50), 1)
-        pygame.draw.rect(self.screen, white, (600, 600, 50, 50), 1)
-        pygame.draw.rect(self.screen, white, (450, 600, 100, 50), 1)
-
-        font = pygame.font.Font(None, 100)
-        text = font.render('>', True, red)
-        screen.blit(text, (705, 585))
-
-        font = pygame.font.Font(None, 100)
-        text = font.render('<', True, red)
-        screen.blit(text, (605, 585))
-
-        font = pygame.font.Font(None, 50)
-        text = font.render('color', True, red)
-        screen.blit(text, (460, 605))
-        pygame.display.flip()
 
 
 gray = (120, 120, 120)
@@ -126,6 +106,7 @@ if __name__ == '__main__':
                     point.move(0, 10)
         ball.update(dt)
         ball.draw(screen)
-        point.move(0, 0)
+        pygame.draw.circle(screen, yellow, (point.x, point.y), 5)
+        pygame.display.flip()
 
     pygame.quit()
