@@ -57,8 +57,10 @@ class Point:
         self.screen = screen
 
     def move(self, dx, dy):
-        self.x += dx
-        self.y += dy
+        if 10 <= self.x + dx < width2 + 10:
+            self.x += dx
+        if 10 <= self.y + dy < height2:
+            self.y += dy
 
 
 gray = (120, 120, 120)
@@ -108,5 +110,4 @@ if __name__ == '__main__':
         ball.draw(screen)
         pygame.draw.circle(screen, yellow, (point.x, point.y), 5)
         pygame.display.flip()
-
     pygame.quit()
