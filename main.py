@@ -23,10 +23,14 @@ class Ball:
         for i in range(len(line_points) - 1):
             x1, y1 = line_points[i]
             x2, y2 = line_points[i + 1]
-            distance = abs((y2 - y1) * self.x - (x2 - x1) * self.y + x2 * y1 - x1 * y2) / math.sqrt(
-                (y2 - y1) ** 2 + (x2 - x1) ** 2)
-            if distance <= 10:
-                self.angle = math.pi - self.angle
+            x3, y3 = self.x, self.y
+            a = ((x1 - x3) ** 2 + (y1 - y3) ** 2) ** 0.5
+            b = ((x2 - x3) ** 2 + (y2 - y3) ** 2) ** 0.5
+            c = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+            p = (a + b + c) / 2
+            h = (2 * ((p * (p - a) * (p - b) * (p - c)) ** 0.5)) / c
+            if h <= 10:
+                print(1)
 
     def draw(self, screen):
         screen.fill('black')
@@ -74,7 +78,6 @@ class Point:
             line_points.append((self.x, self.y))
             if self.x == 10 or self.y == 10 or self.x == width2 + 10 or self.y == height2 + 10:
                 itog_lines.append(line_points)
-                line_points.clear()
 
 
 gray = (120, 120, 120)
