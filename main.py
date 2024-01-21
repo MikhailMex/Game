@@ -10,6 +10,7 @@ class Ball:
         self.angle = math.radians(random.randint(0, 360))
         self.speed = speed
         self.speed1 = speed
+        self.lives = 3
 
     def update(self, dt):
         self.x += self.speed * math.cos(self.angle) * dt
@@ -30,7 +31,7 @@ class Ball:
             p = (a + b + c) / 2
             h = (2 * ((p * (p - a) * (p - b) * (p - c)) ** 0.5)) / c
             if h <= 10:
-                print(1)
+                self.touch()
 
     def draw(self, screen):
         screen.fill('black')
@@ -63,6 +64,9 @@ class Ball:
 
     def minus(self, a):
         self.speed -= a
+
+    def touch(self):
+        pass
 
 
 class Point:    
@@ -102,7 +106,8 @@ if __name__ == '__main__':
     ball = Ball(speed)
     point = Point(width1 // 2, 10, screen)
     running = True
-    while running:
+    score = 0
+    while running and ball.lives > 0:
         dt = clock.tick(60) / 1000.0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
