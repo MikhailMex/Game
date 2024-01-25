@@ -25,12 +25,7 @@ class Ball:
             x1, y1 = line_points[i]
             x2, y2 = line_points[i + 1]
             x3, y3 = self.x, self.y
-            a = ((x1 - x3) ** 2 + (y1 - y3) ** 2) ** 0.5
-            b = ((x2 - x3) ** 2 + (y2 - y3) ** 2) ** 0.5
-            c = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
-            p = (a + b + c) / 2
-            h = (2 * ((p * (p - a) * (p - b) * (p - c)) ** 0.5)) / c
-            if h <= 10:
+            if y1 < y3 < y2 and x3 - x1 <= 10:
                 self.touch()
 
     def draw(self, screen):
@@ -44,7 +39,7 @@ class Ball:
         pygame.draw.rect(screen, white, (450, 600, 100, 50), 1)
         for i in itog_lines:
             if len(i) >= 2:
-                pygame.draw.lines(screen, blue, False, i, 1)
+                pygame.draw.lines(screen, green, False, i, 1)
 
         font = pygame.font.Font(None, 100)
         text = font.render('>', True, red)
@@ -66,7 +61,7 @@ class Ball:
         self.speed -= a
 
     def touch(self):
-        pass
+        print(1)
 
 
 class Point:    
@@ -88,7 +83,7 @@ gray = (120, 120, 120)
 white = (255, 255, 255)
 red = (255, 0, 0)
 yellow = (255, 255, 0)
-blue = (0, 0, 255)
+green = (0, 255, 0)
 
 
 if __name__ == '__main__':
@@ -123,7 +118,7 @@ if __name__ == '__main__':
                     red = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
                     white = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
                     yellow = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-                    blue = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                    green = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     point.move(-10, 0)
