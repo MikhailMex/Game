@@ -61,7 +61,8 @@ class Ball:
         self.speed -= a
 
     def touch(self):
-        print(1)
+        ball.x = 390
+        ball.y = 20
 
 
 class Point:    
@@ -69,14 +70,19 @@ class Point:
         self.x = x
         self.y = y
         self.screen = screen
+        self.k = 0
 
     def move(self, dx, dy):
         if 10 <= self.x + dx <= width2 + 10 and 10 <= self.y + dy <= height2 + 10:
             self.x += dx
             self.y += dy
             line_points.append((self.x, self.y))
-            if self.x == 10 or self.y == 10 or self.x == width2 + 10 or self.y == height2 + 10:
-                itog_lines.append(line_points)
+            a = []
+            a.append(line_points[0])
+            for i in range(len(line_points) - 1):
+                if line_points[i][0] != line_points[i + 1][0]:
+                    a.append(line_points[i])
+            itog_lines.append(a)
 
 
 gray = (120, 120, 120)
@@ -121,12 +127,20 @@ if __name__ == '__main__':
                     green = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    if point.k % 2 != 0:
+                        point.k += 1
                     point.move(-10, 0)
                 elif event.key == pygame.K_RIGHT:
+                    if point.k % 2 != 0:
+                        point.k += 1
                     point.move(10, 0)
                 elif event.key == pygame.K_UP:
+                    if point.k % 2 == 0:
+                        point.k += 1
                     point.move(0, -10)
                 elif event.key == pygame.K_DOWN:
+                    if point.k % 2 == 0:
+                        point.k += 1
                     point.move(0, 10)
         ball.update(dt)
         ball.draw(screen)
