@@ -9,24 +9,27 @@ class Ball:
         self.y = 20
         self.angle = math.radians(random.randint(0, 360))
         self.speed = speed
-        self.speed1 = speed
         self.lives = 3
+        self.k = 0
 
     def update(self, dt):
         self.x += self.speed * math.cos(self.angle) * dt
         self.y -= self.speed * math.sin(self.angle) * dt
 
         if self.x < 20 or self.x > width2:
-            self.angle = 180 - self.angle
+            self.angle = math.radians(180) - self.angle
+            self.x = 20 if self.x < 20 else width2
         if self.y < 20 or self.y > height2:
             self.angle = -self.angle
+            self.y = 20 if self.y < 20 else height2
 
-        for i in range(len(line_points) - 1):
-            x1, y1 = line_points[i]
-            x2, y2 = line_points[i + 1]
-            x3, y3 = self.x, self.y
-            if y1 < y3 < y2 and x3 - x1 <= 10:
-                self.touch()
+        if len(line_points) >= 2:
+            for i in range(len(line_points) - 1):
+                x1, y1 = line_points[i]
+                x2, y2 = line_points[i + 1]
+                x3, y3 = self.x, self.y
+                if y1 < y3 < y2 and x3 - x1 <= 10:
+                    self.touch()
 
     def draw(self, screen):
         screen.fill('black')
@@ -37,9 +40,12 @@ class Ball:
         pygame.draw.rect(screen, white, (700, 600, 50, 50), 1)
         pygame.draw.rect(screen, white, (600, 600, 50, 50), 1)
         pygame.draw.rect(screen, white, (450, 600, 100, 50), 1)
+
         for i in itog_lines:
             if len(i) >= 2:
                 pygame.draw.lines(screen, green, False, i, 1)
+        # if len(line_points) >= 2:
+        #     pygame.draw.lines(screen, green, False, line_points, 1)
 
         font = pygame.font.Font(None, 100)
         text = font.render('>', True, red)
@@ -61,28 +67,30 @@ class Ball:
         self.speed -= a
 
     def touch(self):
-        ball.x = 390
-        ball.y = 20
+        global line_points
+        line_points = line_points[0:1]
+        point.x = width1 // 2
+        point.y = 11
 
 
-class Point:    
+class Point:
     def __init__(self, x, y, screen):
         self.x = x
         self.y = y
         self.screen = screen
-        self.k = 0
+        self.moves = []
 
     def move(self, dx, dy):
         if 10 <= self.x + dx <= width2 + 10 and 10 <= self.y + dy <= height2 + 10:
             self.x += dx
             self.y += dy
-            line_points.append((self.x, self.y))
-            a = []
-            a.append(line_points[0])
-            for i in range(len(line_points) - 1):
-                if line_points[i][0] != line_points[i + 1][0]:
-                    a.append(line_points[i])
-            itog_lines.append(a)
+            if len(line_points) >= 2 and self.moves[-1] == self.moves[-2]:
+                line_points[-1] = (self.x, self.y)
+            else:
+                line_points.append((self.x, self.y))
+        else:
+            itog_lines.append(line_points)
+            line_points.clear()
 
 
 gray = (120, 120, 120)
@@ -90,7 +98,6 @@ white = (255, 255, 255)
 red = (255, 0, 0)
 yellow = (255, 255, 0)
 green = (0, 255, 0)
-
 
 if __name__ == '__main__':
     pygame.init()
@@ -100,9 +107,9 @@ if __name__ == '__main__':
     size2 = width2, height2 = 780, 580
     clock = pygame.time.Clock()
     pause = False
-    speed = 1000
+    speed = 700
     itog_lines = []
-    line_points = [(width1 // 2, 0)]
+    line_points = [(width1 // 2, 10)]
     itog_lines.append(line_points)
     ball = Ball(speed)
     point = Point(width1 // 2, 10, screen)
@@ -127,20 +134,16 @@ if __name__ == '__main__':
                     green = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    if point.k % 2 != 0:
-                        point.k += 1
+                    point.moves.append('+')
                     point.move(-10, 0)
                 elif event.key == pygame.K_RIGHT:
-                    if point.k % 2 != 0:
-                        point.k += 1
+                    point.moves.append('+')
                     point.move(10, 0)
                 elif event.key == pygame.K_UP:
-                    if point.k % 2 == 0:
-                        point.k += 1
+                    point.moves.append('-')
                     point.move(0, -10)
                 elif event.key == pygame.K_DOWN:
-                    if point.k % 2 == 0:
-                        point.k += 1
+                    point.moves.append('-')
                     point.move(0, 10)
         ball.update(dt)
         ball.draw(screen)
