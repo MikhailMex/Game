@@ -24,11 +24,14 @@ class Ball:
             self.y = 20 if self.y < 20 else height2
 
         if len(line_points) >= 2:
+            print(line_points)
             for i in range(len(line_points) - 1):
+                print(i)
                 x1, y1 = line_points[i]
                 x2, y2 = line_points[i + 1]
                 x3, y3 = self.x, self.y
-                if y1 < y3 < y2 and x3 - x1 <= 10:
+                if ((y1 < y3 < y2 and abs(x3 - x1 <= 10) or x1 < x3 < x2 and abs(y3 - y1 <= 10)) or
+                        (y2 < y3 < y1 and abs(x3 - x1 <= 10) or x2 < x3 < x1 and abs(y3 - y1 <= 10))):
                     self.touch()
 
     def draw(self, screen):
@@ -44,8 +47,6 @@ class Ball:
         for i in itog_lines:
             if len(i) >= 2:
                 pygame.draw.lines(screen, green, False, i, 1)
-        # if len(line_points) >= 2:
-        #     pygame.draw.lines(screen, green, False, line_points, 1)
 
         font = pygame.font.Font(None, 100)
         text = font.render('>', True, red)
@@ -68,9 +69,10 @@ class Ball:
 
     def touch(self):
         global line_points
-        line_points = line_points[0:1]
-        point.x = width1 // 2
-        point.y = 11
+        line_points.clear()
+        point.x = width2 // 2
+        point.y = 10
+        line_points.append((point.x, point.y))
 
 
 class Point:
