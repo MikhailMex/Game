@@ -200,4 +200,8 @@ if __name__ == '__main__':
             ball3.draw(screen)
         pygame.draw.circle(screen, yellow, (point.x, point.y), 5)
         pygame.display.flip()
+    else:
+        f = open('Результаты.txt')
+        f.write('Очки:', str(score))
+        f.close()
     pygame.quit()
