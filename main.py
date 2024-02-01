@@ -3,6 +3,19 @@ import math
 import random
 
 
+def calculate_area(points):
+    area = 0
+    n = len(points)
+
+    for i in range(n):
+        j = (i + 1) % n
+        area += points[i][0] * points[j][1] - points[j][0] * points[i][1]
+
+    area = abs(area) / 2
+
+    return area
+
+
 class Ball:
     def __init__(self, speed):
         self.x = 390
@@ -24,9 +37,7 @@ class Ball:
             self.y = 20 if self.y < 20 else height2
 
         if len(line_points) >= 2:
-            print(line_points)
             for i in range(len(line_points) - 1):
-                print(i)
                 x1, y1 = line_points[i]
                 x2, y2 = line_points[i + 1]
                 x3, y3 = self.x, self.y
@@ -61,6 +72,16 @@ class Ball:
         screen.blit(text, (460, 605))
         pygame.display.flip()
 
+        font = pygame.font.Font(None, 50)
+        text = font.render('score: ' + str(score), True, red)
+        screen.blit(text, (10, 605))
+        pygame.display.flip()
+
+        font = pygame.font.Font(None, 50)
+        text = font.render('lives: ' + str(ball.lives), True, red)
+        screen.blit(text, (250, 605))
+        pygame.display.flip()
+
     def plus(self, a):
         self.speed += a
 
@@ -73,6 +94,7 @@ class Ball:
         point.x = width2 // 2
         point.y = 10
         line_points.append((point.x, point.y))
+        ball.lives -= 1
 
 
 class Point:
@@ -93,6 +115,11 @@ class Point:
         else:
             itog_lines.append(line_points)
             line_points.clear()
+            global score
+            global area
+            area += calculate_area(line_points)
+            print(area)
+            score += round(area / (width2 * height2), 0)
 
 
 gray = (120, 120, 120)
@@ -114,9 +141,11 @@ if __name__ == '__main__':
     line_points = [(width1 // 2, 10)]
     itog_lines.append(line_points)
     ball = Ball(speed)
+    area = 0
     point = Point(width1 // 2, 10, screen)
     running = True
     score = 0
+    uroven = 1
     while running and ball.lives > 0:
         dt = clock.tick(60) / 1000.0
         for event in pygame.event.get():
@@ -147,8 +176,28 @@ if __name__ == '__main__':
                 elif event.key == pygame.K_DOWN:
                     point.moves.append('-')
                     point.move(0, 10)
-        ball.update(dt)
-        ball.draw(screen)
+        if area / (width2 * height2) * 100 > 40:
+            uroven += 1
+            area = 0
+            if uroven == 2:
+                ball2 = Ball(screen)
+            if uroven == 3:
+                ball3 = Ball(screen)
+        if uroven == 1:
+            ball.update(dt)
+            ball.draw(screen)
+        elif uroven == 2:
+            ball.update(dt)
+            ball.draw(screen)
+            ball2.update(dt)
+            ball2.draw(screen)
+        elif uroven == 3:
+            ball.update(dt)
+            ball.draw(screen)
+            ball2.update(dt)
+            ball2.draw(screen)
+            ball3.update(dt)
+            ball3.draw(screen)
         pygame.draw.circle(screen, yellow, (point.x, point.y), 5)
         pygame.display.flip()
     pygame.quit()
